@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.du.dao.RdRequestCountMapper">
+    <insert id="initializeIp">
+        insert into rd_request_count (ip)
+            value (#{ip});
+    </insert>
+
+
+    <update id="increaseCount">
+        update rd_request_count
+        <set>
+            <if test="rdRequestCount!=null">
+                <if test="rdRequestCount.success_count != 0">
+                    success_count = success_count+${rdRequestCount.success_count}
+                </if>
+                <if test="rdRequestCount.failure_count != 0">
+                    failure_count = failure_count+${rdRequestCount.failure_count}
+                </if>
+                <if test="rdRequestCount.is_close == 1">
+                    ,is_close = #{rdRequestCount.is_close}
+                </if>
+            </if>
+        </set>
+        where ip = #{rdRequestCount.ip};
+    </update>
+    
+    <select id="selectByIp" resultType="RdRequestCount">
+        select ip,failure_count,is_close from rd_request_count
+        <where>
+            ip = #{ip}
+        </where>
+    </select>
+
+
+</mapper>
